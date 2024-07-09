@@ -1,1 +1,219 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מחשבון היתכנות עסקת נדל"ן</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #0056b3;
+        }
+        input, select {
+            margin: 5px 0;
+            padding: 10px;
+            width: calc(100% - 22px);
+            box-sizing: border-box;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: right;
+        }
+        button {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .whatsapp-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg');
+            background-size: cover;
+            cursor: pointer;
+        }
+        footer {
+            margin-top: 50px;
+            text-align: center;
+        }
+        @media print {
+            body > *:not(#printArea) {
+                display: none;
+            }
+            #printArea {
+                display: block;
+            }
+            h2 {
+                color: #0056b3;
+                text-align: center;
+            }
+            p {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>מחשבון היתכנות עסקת נדל"ן</h1>
+    <form id="calcForm">
+        <label for="netIncome">משכורת נטו שלך:</label>
+        <input type="text" id="netIncome" value="15,000" required>
+        
+        <label for="partnerIncome">משכורת נטו של בן זוג (אם יש):</label>
+        <input type="text" id="partnerIncome" value="10,000">
+        
+        <label for="additionalIncome">סה"כ הכנסות קבועות נוספות:</label>
+        <input type="text" id="additionalIncome" value="0">
+        
+        <label for="loanRepayment">החזר חודשי של הלוואות ארוכות טווח:</label>
+        <input type="text" id="loanRepayment" value="0">
+        
+        <label for="rent">שכירות (במידה ושוכר בית):</label>
+        <input type="text" id="rent" value="0">
+        
+        <label for="housePrice">מחיר הבית שמעוניינים לקנות:</label>
+        <input type="text" id="housePrice" value="2,000,000" required>
+        <br>
+        <label for="equity">הון עצמי קיים:</label>
+        <input type="text" id="equity" value="500,000" required>
+        
+        <label for="isSingleHouse">האם זאת דירה יחידה:</label>
+        <select id="isSingleHouse" required>
+            <option value="כן">כן</option>
+            <option value="לא">לא</option>
+        </select>
+        
+        <button type="button" onclick="calculate()">חשב</button>
+    </form>
+    
+    <div id="results" class="result" style="display: none;">
+        <div id="printArea">
+            <h2>מחשבון היתכנות עסקת נדל"ן</h2>
+        </div>
+    </div>
+    
+    <button id="printButton" onclick="printPDF()" style="display: none;">הדפס</button>
+    
+    <div class="whatsapp-icon" onclick="window.location.href='https://wa.me/0502638644'"></div>
+    
+    <footer>כל הזכויות שמורות 2024 ©</footer>
+    
+    <script>
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
 
+        function parseNumber(num) {
+            return parseFloat(num.replace(/,/g, '')) || 0;
+        }
+
+        function calculate() {
+            let netIncome = parseNumber(document.getElementById('netIncome').value);
+            let partnerIncome = parseNumber(document.getElementById('partnerIncome').value);
+            let additionalIncome = parseNumber(document.getElementById('additionalIncome').value);
+            let loanRepayment = parseNumber(document.getElementById('loanRepayment').value);
+            let rent = parseNumber(document.getElementById('rent').value);
+            let housePrice = parseNumber(document.getElementById('housePrice').value);
+            let equity = parseNumber(document.getElementById('equity').value);
+            let isSingleHouse = document.getElementById('isSingleHouse').value.toLowerCase();
+            
+            if (!netIncome || !housePrice || !equity || (isSingleHouse !== 'כן' && isSingleHouse !== 'לא')) {
+                alert("יש להכניס את כל הנתונים הדרושים.");
+                return;
+            }
+            
+            let totalIncome = netIncome + partnerIncome + additionalIncome;
+            let totalExpenses = loanRepayment + rent;
+            let freeIncome = totalIncome - totalExpenses;
+            
+            let maxMortgage = isSingleHouse === 'כן' ? housePrice * 0.75 : housePrice * 0.5;
+            let estimatedMonthlyRepayment = Math.round(maxMortgage / 100000 * 600);
+            let maxMonthlyRepayment = Math.round(freeIncome * 0.38);
+            
+            let results = document.getElementById('results');
+            results.style.display = 'block';
+            
+            let resultHtml = `
+                <table>
+                    <tr><th>סך ההכנסות</th><td>${formatNumber(Math.round(totalIncome))} ש"ח</td></tr>
+                    <tr><th>סך ההוצאות</th><td>${formatNumber(Math.round(totalExpenses))} ש"ח</td></tr>
+                    <tr><th>הכנסה פנויה</th><td>${formatNumber(Math.round(freeIncome))} ש"ח</td></tr>
+                    <tr><th>מקסימום משכנתא שניתן לקחת</th><td>${formatNumber(Math.round(maxMortgage))} ש"ח</td></tr>
+                    <tr><th>החזר חודשי משוער</th><td>${formatNumber(estimatedMonthlyRepayment)} ש"ח</td></tr>
+                    <tr><th>מקסימום החזר חודשי שניתן לשלם</th><td>${formatNumber(maxMonthlyRepayment)} ש"ח</td></tr>
+                </table>
+            `;
+            
+            if (equity + maxMortgage < housePrice) {
+                resultHtml += '<p class="error">לא ניתן לקחת משכנתא בגלל הון עצמי נמוך מידי.</p>';
+            } else if (estimatedMonthlyRepayment > maxMonthlyRepayment) {
+                resultHtml += '<p class="error">לא ניתן לקחת משכנתא בגלל החזר חודשי מעל תקרת החזר.</p>';
+            } else {
+                resultHtml += '<p class="success">ניתן לקבל משכנתא.</p>';
+            }
+
+            resultHtml += `
+                <p>
+                    שמי שלומי, יועץ משכנתאות מנוסה, ואני כאן כדי לסייע לכם בקבלת המשכנתא האופטימלית עבורכם. 
+                    גם אם תוצאת המחשבון מראה שאתם יכולים לקבל משכנתא וגם אם לא, אני מזמין אתכם ליצור קשר על מנת לבדוק אפשרויות נוספות 
+                    ולהבטיח שתקבלו את התנאים הטובים ביותר בשוק.
+                </p>
+                <p>טלפון: 050-2638644</p>
+                <p>אימייל: shlomi.p10@gmail.com</p>
+            `;
+            
+            document.getElementById('printArea').innerHTML = resultHtml;
+            document.getElementById('printButton').style.display = 'inline-block';
+        }
+
+        function printPDF() {
+            window.print();
+        }
+
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.addEventListener('input', function() {
+                this.value = formatNumber(parseNumber(this.value));
+            });
+        });
+    </script>
+</body>
+</html>
