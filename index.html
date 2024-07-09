@@ -13,9 +13,14 @@
             background-color: #f4f4f4;
             line-height: 1.6;
         }
-        h1, h2 {
+        h1 {
             text-align: center;
             color: #0056b3;
+        }
+        h2 {
+            text-align: center;
+            color: #0056b3;
+            font-size: 24px;
         }
         input, select {
             margin: 5px 0;
@@ -82,11 +87,12 @@
             #printArea {
                 display: block;
             }
-            h2 {
+            #printArea h2 {
                 color: #0056b3;
+                font-size: 24px;
                 text-align: center;
             }
-            p {
+            #printArea p {
                 margin-bottom: 10px;
             }
         }
@@ -131,7 +137,7 @@
         </div>
     </div>
     
-    <button id="printButton" onclick="printPDF()" style="display: none;">הדפס</button>
+    <button id="printButton" onclick="window.print()" style="display: none;">הדפס</button>
     
     <div class="whatsapp-icon" onclick="window.location.href='https://wa.me/0502638644'"></div>
     
@@ -197,16 +203,12 @@
                     גם אם תוצאת המחשבון מראה שאתם יכולים לקבל משכנתא וגם אם לא, אני מזמין אתכם ליצור קשר על מנת לבדוק אפשרויות נוספות 
                     ולהבטיח שתקבלו את התנאים הטובים ביותר בשוק.
                 </p>
-                <p>טלפון: 050-2638644</p>
-                <p>אימייל: shlomi.p10@gmail.com</p>
+                <p>טלפון: <a href="tel:0502638644">050-2638644</a></p>
+                <p>אימייל: <a href="mailto:shlomi.p10@gmail.com">shlomi.p10@gmail.com</a></p>
             `;
             
             document.getElementById('printArea').innerHTML = resultHtml;
             document.getElementById('printButton').style.display = 'inline-block';
-        }
-
-        function printPDF() {
-            window.print();
         }
 
         document.querySelectorAll('input[type="text"]').forEach(input => {
