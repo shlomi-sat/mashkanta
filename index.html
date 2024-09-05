@@ -1,221 +1,308 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחשבון היתכנות עסקת נדל"ן</title>
+    <title>מחשבון עסקת נדל"ן לדירה יחידה</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
             background-color: #f4f4f4;
-            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+            text-align: right;
+            padding-bottom: 100px; /* כאן מוסיפים את הרווח בתחתית */
         }
+
+        header {
+            background-image: url('baner.jpg');
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
         h1 {
             text-align: center;
-            color: #0056b3;
+            color: #333;
         }
-        h2 {
-            text-align: center;
-            color: #0056b3;
-            font-size: 24px;
-        }
-        input, select {
-            margin: 5px 0;
-            padding: 10px;
-            width: calc(100% - 22px);
-            box-sizing: border-box;
-        }
-        .result {
+
+        .input-section, .output-section {
             margin: 20px 0;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
-        .error {
-            color: red;
+
+        .input-section {
+            background-color: #f2f2f2;
         }
-        .success {
-            color: green;
+
+        label {
+            display: block;
+            margin: 10px 0;
+            font-weight: bold;
         }
-        table {
+
+        input {
             width: 100%;
-            border-collapse: collapse;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .buttons {
+            text-align: center;
             margin-top: 20px;
         }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: right;
-        }
+
         button {
-            display: inline-block;
-            margin: 10px 0;
             padding: 10px 20px;
-            background-color: #4CAF50;
+            font-size: 16px;
+            background-color: #007bff;
             color: white;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
-            border-radius: 5px;
         }
+
         button:hover {
-            background-color: #45a049;
+            background-color: #0056b3;
         }
-        .whatsapp-icon {
+
+        .floating-icons {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .floating-icons img {
             width: 50px;
             height: 50px;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg');
-            background-size: cover;
-            cursor: pointer;
+            margin: 10px;
         }
-        footer {
-            margin-top: 50px;
-            text-align: center;
+
+        table {
+            width: 100%; /* פריסת הטבלה על כל הרוחב */
+            max-width: 900px; /* מקסימום רוחב הטבלה */
+            border-collapse: collapse; /* איחוד גבולות הטבלה */
+            margin: 20px auto; /* מרכז את הטבלה אופקית */
+            table-layout: fixed; /* קיבוע העמודות כך שיפרסו באופן שווה */
         }
-        @media print {
-            body > *:not(#printArea) {
-                display: none;
-            }
-            #printArea {
-                display: block;
-            }
-            #printArea h2 {
-                color: #0056b3;
-                font-size: 24px;
-                text-align: center;
-            }
-            #printArea p {
-                margin-bottom: 10px;
-            }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: right;
+            width: auto;
         }
+
+        th {
+            background-color: #f2f2f2;
+            width: auto;
+        }
+
+        #finalText p {
+            line-height: 1.6; /* ריווח בין השורות */
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
-    <h1>מחשבון היתכנות עסקת נדל"ן</h1>
-    <form id="calcForm">
-        <label for="netIncome">משכורת נטו שלך:</label>
-        <input type="text" id="netIncome" value="15,000" required>
-        
-        <label for="partnerIncome">משכורת נטו של בן זוג (אם יש):</label>
-        <input type="text" id="partnerIncome" value="10,000">
-        
-        <label for="additionalIncome">סה"כ הכנסות קבועות נוספות:</label>
-        <input type="text" id="additionalIncome" value="0">
-        
-        <label for="loanRepayment">החזר חודשי של הלוואות ארוכות טווח:</label>
-        <input type="text" id="loanRepayment" value="0">
-        
-        <label for="rent">שכירות (במידה ושוכר בית):</label>
-        <input type="text" id="rent" value="0">
-        
-        <label for="housePrice">מחיר הבית שמעוניינים לקנות:</label>
-        <input type="text" id="housePrice" value="2,000,000" required>
-        <br>
-        <label for="equity">הון עצמי קיים:</label>
-        <input type="text" id="equity" value="500,000" required>
-        
-        <label for="isSingleHouse">האם זאת דירה יחידה:</label>
-        <select id="isSingleHouse" required>
-            <option value="כן">כן</option>
-            <option value="לא">לא</option>
-        </select>
-        
-        <button type="button" onclick="calculate()">חשב</button>
-    </form>
-    
-    <div id="results" class="result" style="display: none;">
-        <div id="printArea">
-            <h2>מחשבון היתכנות עסקת נדל"ן</h2>
+    <header></header>
+    <div class="container">
+        <h1>מחשבון עסקת נדל"ן לדירה יחידה</h1>
+
+        <div class="input-section">
+            <form id="realEstateCalculator">
+                <label>מחיר דירה (שקלים):</label>
+                <input type="number" id="apartmentPrice" value="1000000" min="1" required><br>
+
+                <label>תיווך (%):</label>
+                <input type="number" id="brokerFee" value="2" min="0.1" step="0.1" required><br>
+
+                <label>עו"ד (%):</label>
+                <input type="number" id="lawyerFee" value="0.5" min="0.1" step="0.1" required><br>
+
+                <label>שונות (שקלים):</label>
+                <input type="number" id="miscellaneous" value="20000" min="1" required><br>
+
+                <label>הון עצמי (שקלים):</label>
+                <input type="number" id="ownCapital" value="345000" min="1" required><br>
+
+                <label>הכנסות נטו משק בית (שקלים):</label>
+                <input type="number" id="householdIncome" value="15000" min="1" required><br>
+
+                <label>החזר משכנתא לכל 100k (שקלים):</label>
+                <input type="number" id="mortgagePer100k" value="600" min="1" required><br>
+
+                <div class="buttons">
+                    <button type="button" onclick="calculate()">חשב</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="output-section">
+            <div id="output"></div>
+            <p id="recommendationText" style="display:none;"></p>
+
+            <table id="summaryTable" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>פרמטר</th>
+                        <th>ערך</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>מחיר דירה</td>
+                        <td id="resultPrice"></td>
+                    </tr>
+                    <tr>
+                        <td>תיווך</td>
+                        <td id="resultBrokerFee"></td>
+                    </tr>
+                    <tr>
+                        <td>עו"ד</td>
+                        <td id="resultLawyerFee"></td>
+                    </tr>
+                    <tr>
+                        <td>שונות</td>
+                        <td id="resultMiscellaneous"></td>
+                    </tr>
+                    <tr>
+                        <td>הון עצמי נטו</td>
+                        <td id="resultNetCapital"></td>
+                    </tr>
+                    <tr>
+                        <td>משכנתא נדרשת</td>
+                        <td id="resultMortgage"></td>
+                    </tr>
+                    <tr>
+                        <td>החזר משכנתא חודשי</td>
+                        <td id="resultMonthlyPayment"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="finalText">
+                <p>אני מזמין אתכם להיעזר בי בחינם באמצעות הוואטסאפ בכל שאלה הקשורה למחשבון. </p>
+                <p>הצטרפו לקבוצת הפייסבוק שלנו, שם תמצאו מחשבונים וטיפים פיננסיים שיכולים לעזור לכם בבהתנהלות הפיננסית שלכם!</p>
+            </div>
         </div>
     </div>
-    
-    <button id="printButton" onclick="window.print()" style="display: none;">הדפס</button>
-    
-    <div class="whatsapp-icon" onclick="window.location.href='https://wa.me/0502638644'"></div>
-    
-    <footer>כל הזכויות שמורות 2024 ©</footer>
-    
+
+    <div class="floating-icons">
+        <a href="https://wa.me/972502638644"><img src="whatsapp.svg" alt="WhatsApp"></a>
+        <a href="https://www.facebook.com/your-facebook-group-link"><img src="facebook.svg" alt="Facebook"></a>
+    </div>
+
     <script>
-        function formatNumber(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-
-        function parseNumber(num) {
-            return parseFloat(num.replace(/,/g, '')) || 0;
-        }
-
-        function calculate() {
-            let netIncome = parseNumber(document.getElementById('netIncome').value);
-            let partnerIncome = parseNumber(document.getElementById('partnerIncome').value);
-            let additionalIncome = parseNumber(document.getElementById('additionalIncome').value);
-            let loanRepayment = parseNumber(document.getElementById('loanRepayment').value);
-            let rent = parseNumber(document.getElementById('rent').value);
-            let housePrice = parseNumber(document.getElementById('housePrice').value);
-            let equity = parseNumber(document.getElementById('equity').value);
-            let isSingleHouse = document.getElementById('isSingleHouse').value.toLowerCase();
-            
-            if (!netIncome || !housePrice || !equity || (isSingleHouse !== 'כן' && isSingleHouse !== 'לא')) {
-                alert("יש להכניס את כל הנתונים הדרושים.");
-                return;
+    function validateInputs() {
+        let inputs = document.querySelectorAll('input[type="number"]');
+        for (let input of inputs) {
+            if (input.value === '' || parseFloat(input.value) < 0) {
+                clearResults(); // נקה את התוצאות במידה והוזן ערך שגוי
+		alert('נא להזין ערכים גדולים או שווים ל-0 בלבד.');		
+                	return false;
             }
-            
-            let totalIncome = netIncome + partnerIncome + additionalIncome;
-            let totalExpenses = loanRepayment + rent;
-            let freeIncome = totalIncome - totalExpenses;
-            
-            let maxMortgage = isSingleHouse === 'כן' ? housePrice * 0.75 : housePrice * 0.5;
-            let estimatedMonthlyRepayment = Math.round(maxMortgage / 100000 * 600);
-            let maxMonthlyRepayment = Math.round(freeIncome * 0.38);
-            
-            let results = document.getElementById('results');
-            results.style.display = 'block';
-            
-            let resultHtml = `
-                <table>
-                    <tr><th>סך ההכנסות</th><td>${formatNumber(Math.round(totalIncome))} ש"ח</td></tr>
-                    <tr><th>סך ההוצאות</th><td>${formatNumber(Math.round(totalExpenses))} ש"ח</td></tr>
-                    <tr><th>הכנסה פנויה</th><td>${formatNumber(Math.round(freeIncome))} ש"ח</td></tr>
-                    <tr><th>מקסימום משכנתא שניתן לקחת</th><td>${formatNumber(Math.round(maxMortgage))} ש"ח</td></tr>
-                    <tr><th>החזר חודשי משוער</th><td>${formatNumber(estimatedMonthlyRepayment)} ש"ח</td></tr>
-                    <tr><th>מקסימום החזר חודשי שניתן לשלם</th><td>${formatNumber(maxMonthlyRepayment)} ש"ח</td></tr>
-                </table>
-            `;
-            
-            if (equity + maxMortgage < housePrice) {
-                resultHtml += '<p class="error">לא ניתן לקחת משכנתא בגלל הון עצמי נמוך מידי.</p>';
-            } else if (estimatedMonthlyRepayment > maxMonthlyRepayment) {
-                resultHtml += '<p class="error">לא ניתן לקחת משכנתא בגלל החזר חודשי מעל תקרת החזר.</p>';
-            } else {
-                resultHtml += '<p class="success">ניתן לקבל משכנתא.</p>';
-            }
+        }
+        return true;
+    }
 
-            resultHtml += `
-                <p>
-                    שמי שלומי, יועץ משכנתאות מנוסה, ואני כאן כדי לסייע לכם בקבלת המשכנתא האופטימלית עבורכם. 
-                    גם אם תוצאת המחשבון מראה שאתם יכולים לקבל משכנתא וגם אם לא, אני מזמין אתכם ליצור קשר על מנת לבדוק אפשרויות נוספות 
-                    ולהבטיח שתקבלו את התנאים הטובים ביותר בשוק.
-                </p>
-                <p>טלפון: <a href="tel:0502638644">050-2638644</a></p>
-                <p>אימייל: <a href="mailto:shlomi.p10@gmail.com">shlomi.p10@gmail.com</a></p>
-            `;
-            
-            document.getElementById('printArea').innerHTML = resultHtml;
-            document.getElementById('printButton').style.display = 'inline-block';
+    function clearResults() {
+        document.getElementById('output').innerHTML = ''; // נקה את התוצאה
+        document.getElementById('summaryTable').style.display = 'none'; // הסתר את הטבלה
+        document.getElementById('recommendationText').style.display = 'none'; // הסתר את ההמלצה
+    }
+
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function calculate() {
+        // אימות לפני חישוב
+        if (!validateInputs()) {
+            return; // מפסיקים את החישוב אם האימות נכשל
         }
 
-        document.querySelectorAll('input[type="text"]').forEach(input => {
-            input.addEventListener('input', function() {
-                this.value = formatNumber(parseNumber(this.value));
-            });
-        });
-    </script>
+
+        let price = parseFloat(document.getElementById('apartmentPrice').value);
+        let brokerFee = parseFloat(document.getElementById('brokerFee').value) / 100;
+        let lawyerFee = parseFloat(document.getElementById('lawyerFee').value) / 100;
+        let miscellaneous = parseFloat(document.getElementById('miscellaneous').value);
+        let ownCapital = parseFloat(document.getElementById('ownCapital').value);
+        let householdIncome = parseFloat(document.getElementById('householdIncome').value);
+        let mortgagePer100k = parseFloat(document.getElementById('mortgagePer100k').value);
+
+        let totalFees = Math.round((price * brokerFee) + (price * lawyerFee) + miscellaneous);
+        let netCapital = Math.round(ownCapital - totalFees);
+        let requiredMortgage = Math.round(price - netCapital);
+
+        let output = document.getElementById('output');
+        let summaryTable = document.getElementById('summaryTable');
+        let recommendationText = document.getElementById('recommendationText');
+        let finalText = document.getElementById('finalText');
+        summaryTable.style.display = 'none';
+        recommendationText.style.display = 'none';
+        output.innerHTML = '';
+
+        if (requiredMortgage > price * 0.7) {
+            let requiredOwnCapital = Math.round(price * 0.3);
+            let missingCapital = Math.round(requiredOwnCapital - netCapital);
+            output.innerHTML = `<span class="error">חסרים ${formatNumber(missingCapital)} שקלים בהון העצמי כדי לבצע את הרכישה.</span>`;
+            finalText.style.display = 'block';
+            return;
+        }
+
+        let maxPayment = Math.round(householdIncome * 0.4);
+        let monthlyPayment = Math.round((requiredMortgage / 100000) * mortgagePer100k);
+
+        if (monthlyPayment > maxPayment) {
+            let requiredIncome = Math.round(monthlyPayment / 0.4);
+            let missingIncome = Math.round(requiredIncome - householdIncome);
+            output.innerHTML = `<span class="error">חסרים ${formatNumber(missingIncome)} שקלים בהכנסות נטו כדי לבצע את הרכישה.</span>`;
+            finalText.style.display = 'block';
+            return;
+        }
+
+        // הצגת הטבלה והמלצה חיובית
+        document.getElementById('resultPrice').innerText = `${formatNumber(price)} ₪`;
+        document.getElementById('resultBrokerFee').innerText = `${formatNumber(Math.round(price * brokerFee))} ₪`;
+        document.getElementById('resultLawyerFee').innerText = `${formatNumber(Math.round(price * lawyerFee))} ₪`;
+        document.getElementById('resultMiscellaneous').innerText = `${formatNumber(miscellaneous)} ₪`;
+        document.getElementById('resultNetCapital').innerText = `${formatNumber(netCapital)} ₪`;
+        document.getElementById('resultMortgage').innerText = `${formatNumber(requiredMortgage)} ₪`;
+        document.getElementById('resultMonthlyPayment').innerText = `${formatNumber(monthlyPayment)} ₪`;
+
+        recommendationText.innerHTML = `<span class="success">אין מניעה לבצע את עסקת הרכישה.</span>`;
+        recommendationText.style.display = 'block';
+        summaryTable.style.display = 'block';
+        finalText.style.display = 'block';
+    }
+</script>
+
 </body>
 </html>
